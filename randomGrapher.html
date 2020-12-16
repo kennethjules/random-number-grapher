@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    <link rel="stylesheet" href="grapherStyle.css" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+      integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div id="wrapper">
+      <div class="container">
+        <div class="row NavArea">
+          <div class="col-sm-12"><h1>Random Number Grapher</h1></div>
+        </div>
+        <div class="row everything">
+          <div class="graph col-sm-12">
+            <canvas id="myChart" width="auto" height="100px"></canvas>
+          </div>
+          <div class="buttons col-md-6">
+            <button class="btn btn-outline-dark" onclick="reset()">
+              reset
+            </button>
+            <button class="btn btn-outline-dark" onclick="pickNumber()">
+              1 Number
+            </button>
+            <button class="btn btn-outline-dark" onclick="bunchPick(10)">
+              10 Numbers
+            </button>
+            <button class="btn btn-outline-dark" onclick="bunchPick(100)">
+              100 Numbers
+            </button>
+            <button class="btn btn-outline-dark" onclick="bunchPick(1000)">
+              1000 Numbers
+            </button>
+          </div>
+          <div class="description col-md-6">
+            <p>
+              I have read in a few different places that the Javascript
+              Math.random function is not random and does not distribute the
+              numbers evenly. I decided to make this quick and simple
+              application that generates a random number between 0 and 9 and
+              tallies up the number of times that the number was generated. Once
+              you click the Random Number button a number will be generated and
+              graphed. I have also added buttons to generate 10, 100 and 1000
+              numbers at a time.
+            </p>
+          </div>
+        </div>
+        <div class="row theFooterArea">
+          <div class="col-sm-12"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let numbers = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+      let count = 0;
+
+      var ctx = document.getElementById("myChart").getContext("2d");
+      var myChart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+          datasets: [
+            {
+              label: "Random numbers",
+              data: [
+                numbers[0],
+                numbers[1],
+                numbers[2],
+                numbers[3],
+                numbers[4],
+                numbers[5],
+                numbers[6],
+                numbers[7],
+                numbers[8],
+                numbers[9],
+              ],
+              backgroundColor: [
+                "rgba(255, 99, 132, 0.2)",
+                "rgba(54, 162, 235, 0.2)",
+                "rgba(255, 206, 86, 0.2)",
+                "rgba(75, 192, 192, 0.2)",
+                "rgba(153, 102, 255, 0.2)",
+                "rgba(255, 99, 132, 0.2)",
+                "rgba(54, 162, 235, 0.2)",
+                "rgba(255, 206, 86, 0.2)",
+                "rgba(75, 192, 192, 0.2)",
+                "rgba(153, 102, 255, 0.2)",
+              ],
+              borderColor: [
+                "rgba(255, 99, 132, 1)",
+                "rgba(54, 162, 235, 1)",
+                "rgba(255, 206, 86, 1)",
+                "rgba(75, 192, 192, 1)",
+                "rgba(153, 102, 255, 1)",
+                "rgba(255, 99, 132, 1)",
+                "rgba(54, 162, 235, 1)",
+                "rgba(255, 206, 86, 1)",
+                "rgba(75, 192, 192, 1)",
+                "rgba(153, 102, 255, 1)",
+              ],
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          scales: {
+            yAxes: [
+              {
+                ticks: {
+                  beginAtZero: true,
+                  suggestedMin: 10,
+                  suggestedMax: 10,
+                  stepSize: 1,
+                },
+              },
+            ],
+          },
+        },
+      });
+
+      function reset() {
+        numbers = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        count = 0;
+        updateChart();
+      }
+
+      function bunchPick(n) {
+        for (let i = 0; i < n; i++) {
+          numbers[Math.floor(Math.random() * 10)] += 1;
+          count += 1;
+        }
+        for (let n = 0; n < numbers.length; n++) {
+          myChart.data.datasets[0].label = `${count} numbers. picked numbers: ${numbers}`;
+          updateChart();
+        }
+      }
+
+      function updateChart() {
+        for (let n = 0; n < numbers.length; n++) {
+          myChart.data.datasets[0].label = `${count} numbers. picked numbers: ${numbers}`;
+          myChart.data.datasets[0].data[n] = numbers[n];
+          myChart.update();
+        }
+      }
+      function pickNumber() {
+        let rn = Math.floor(Math.random() * 10);
+        numbers[rn] += 1;
+        count += 1;
+        // update the first dataset's value of 'March' to be 50
+        myChart.data.datasets[0].data[rn] = numbers[rn];
+        myChart.data.datasets[0].label = `${count} numbers. picked numbers: ${numbers}`;
+        myChart.update();
+      }
+
+      function updateText(txt) {
+        document.getElementById("messageText").innerHTML = `${txt}`;
+        document.getElementById(
+          "scoreText1"
+        ).innerHTML = `Score:${score} Right:${rightCount} Wrong:${wrongCount}`;
+        document.getElementById(
+          "scoreText2"
+        ).innerHTML = `multi:${mulitStreak} Streak:win ${winningStreak} loss ${losingStreak}`;
+        document.getElementById(
+          "oldNumberText"
+        ).innerHTML = `Old Number: ${lastNumber}`;
+        document.getElementById(
+          "currentNumberText"
+        ).innerHTML = `Current Number: ${currentNumber}`;
+      }
+    </script>
+  </body>
+</html>
